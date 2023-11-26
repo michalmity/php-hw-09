@@ -2,7 +2,7 @@
 
 Vaším úkolem je vytvořit jednoduché REST API pro správu knih. Pomocí API lze prohlížet existující knihy, vytvářet nové a upravovat a mazat existující.
 
-Zvolte si persistentní úložitě, které chcete použít (např. Sqlite, nebo soubor) a do něj ukládejte informace o knihách. Každá kniha sestává z následujících položek:
+Jako persistentní úložitě budeme používat Sqlite a do něj budeme ukládat informace o knihách. K ukládání bude sloužit tabulka `books` a bude mít následující sloupce:
 
 - `id`
 - `name`
@@ -11,27 +11,52 @@ Zvolte si persistentní úložitě, které chcete použít (např. Sqlite, nebo 
 - `isbn`
 - `pages`
 
+Testovací prostředí **závisí** na konkrétních názvech sloupců; prosíme o jejich dodržení.
+
 Prohlížení existujících záznamů může dělat kdokoliv. Operace, které záznamy upravují mohou dělat pouze autorizovaní uživatelé,
 kdy ověření probíhá pomocí HTTP Basic Auth. Pro účely tohoto úkolu stačí "zahardcodovat" uživatele `admin` s heslem `pas$word`.
+Pro získávání hesla a loginu použijte `$request->getHeader('Authorization')` např. v nějakém middlewaru.
 
-Máte připravenou kostru aplikace v `public/index.php`.
+Máte připravenou kostru aplikace v `public/index.php` a `src/Rest/RestApp`. Implementujte metodu `configure()` ve třidě `RestApp`, zbytek třídy neměnte.
 
-Není potřeba implementovat vše v jednom scriptu, máte nastavený namespace `Books` do složky `src`,
+Máte také připravenou dokumentaci endpointů v openapi specifikaci ve složce [`docs`](docs/openapi.yaml). Tu si můžete zobrazit v PHP stormu a nebo v libovolném editoru openAPI, třeba swagger.
+
+Není potřeba implementovat vše v do jedné metody, máte nastavený namespace `Books` do složky `src`,
 vytvořte si další třídy, které budete potřebovat, aby byl kód přehledný.
 
-## Spuštění
 
-Používáte-li [předpřipravený docker](https://gitlab.fit.cvut.cz/BI-PHP/bi-php-docker), máte v něm připraven example aplikace.
-Abyste na její místo dali HW-08, upravte buďto cesty v konfiguraci (viz
-[Návod na konci README](https://gitlab.fit.cvut.cz/BI-PHP/bi-php-docker#kde-se-mohu-pod%C3%ADvat-na-uk%C3%A1zkovou-aplikaci)),
-nebo zdrojáky HW08 vložte přímo do `/src/` dockeru.
+## Setup automatických testu
 
-Pokud nepoužíváte Docker, můžete aplikaci spustit pomocí PHP build-in serveru: `$ php -S localhost:8080 -t public public/index.php`,
-nebo libovolného vlastního webserveru.
+Máte na výběr 2 možnosti, bud to spustit lokalně => pak musíte mít instalovano php a composer a nebo použít připravený docker-compose.yaml.
+
+Postup pro vývoj na lokalu:
+
+1. Musíte si instalovat php, composer a sqlLite a nebo postgres databázi, POZOR pro testování používáme SQL lite db, pozor na rozdíly v syntaxe,
+   pro každý operačný systém instalace je jiná, zkuste si vyhledat návod na webu.
+2. Instalace composer pro ubuntu: `sudo apt-get install composer`
+3. Pote musíte instalovat knihovny pomocí příkazu: `composer install`
+4. Dále můžete spouštět lokalní testování pomocí: `php run.php`
+5. Přípravené testy můžete pustit pomocí příkazu: `composer test`
+6. Přípojení k db si můžete změnit v souboru `src\Db.php`
+
+Postup pro docker:
+
+1. V kořenu projektu nalezněte docker-compose.yaml soubor
+2. Příhlašte se do registry pomocí docker login gitlab.fit.cvut.cz:5050 -u <username> -p <access_token> pokud jste to ještě neudělali.
+3. Zavolejte přikaz v konzoli: `docker-compose up`
+4. Otevřete novou založku a spuste příkaz `docker-compose exec php bash`, pomocí kterého se připojíte k běžicímu php kontejneru.
+5. Pote musíte instalovat knihovny pomocí příkazu: `composer install`
+6. Přípojení k db si můžete změnit v souboru `src\Db.php` -> výchozí připojení je nastaveno na SQLLite a pro testování také používáme SQL Lite, Pozor na to.
+7. Pro Sql Lite stačí zvolit soubor s touto db po prvním volání. Soubor se objeví v kořenu projektu.
+8. Vaše appka by měla být dostupna na adrese http://localhost:8000/
+9. Přípravené testy můžete pustit pomocí příkazu: `composer test`
+
+Pozor pokud používate docker, všechny tyto přikazy musíte volat uvnitř kontejneru a nebo nastavit si remote interpretor v php stormu.
+
 
 ---
 
-## Seznam uložených knih (1 bod)
+## Seznam uložených knih
 
 **Request**
 
@@ -58,7 +83,7 @@ Vrátí seznam uložených knih. V případě, že žádné knihy uložené nejs
 
 ---
 
-## Detail knihy (0.5 bod)
+## Detail knihy
 
 **Request**
 
@@ -86,16 +111,23 @@ Vrátí detail knihy, který obsahuje všechna pole.
 
 **Error Response**
 
-V případě neexistujícího `id` vártí HTTP chybu 404.
+V případě neexistujícího `id` vrátí HTTP chybu 404.
 
 ```
 < 404 Not Found
 
 ```
 
+V případě špatně zadaného `id` vrátí HTTP chybu 400 (např. není to číslo).
+
+```
+< 400 Bad Request
+
+```
+
 ---
 
-## Vytvoření nové knihy 🔐 (2 bodu)
+## Vytvoření nové knihy 🔐
 
 **Request**
 
@@ -147,7 +179,7 @@ Pokud request neobsahuje všechny informace o knize, vrátí server HTTP chybu 4
 
 ---
 
-## Aktualizace existující knihy 🔐 (1.5 bodu)
+## Aktualizace existující knihy 🔐
 
 **Request**
 
@@ -207,7 +239,7 @@ Stejně jako v případě vytváření nové knihy, je i zde potřeba ověřit, 
 
 ---
 
-## Smazání knihy 🔐 (1 bod)
+## Smazání knihy 🔐
 
 **Request**
 
