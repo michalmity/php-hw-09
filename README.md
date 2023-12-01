@@ -35,9 +35,8 @@ Postup pro vývoj na lokalu:
    pro každý operačný systém instalace je jiná, zkuste si vyhledat návod na webu.
 2. Instalace composer pro ubuntu: `sudo apt-get install composer`
 3. Pote musíte instalovat knihovny pomocí příkazu: `composer install`
-4. Dále můžete spouštět lokalní testování pomocí: `php run.php`
-5. Přípravené testy můžete pustit pomocí příkazu: `composer test`
-6. Přípojení k db si můžete změnit v souboru `src\Db.php`
+4. Přípravené testy můžete pustit pomocí příkazu: `composer test`
+5. Přípojení k db si můžete změnit v souboru `src\Db.php`
 
 Postup pro docker:
 
