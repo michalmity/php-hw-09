@@ -28,7 +28,7 @@ class HelperFactory
     public static function dropDB(): void
     {
         $pdo = DB::get();
-        $st = $pdo->query("DELETE FROM books");
+        $st = $pdo->query('DROP TABLE IF EXISTS books;');
         $st->execute();
     }
 
