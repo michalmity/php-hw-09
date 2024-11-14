@@ -8,5 +8,3 @@ tests/private/PrivateBookTest.php.gpg.asc
 tests/HelperFactory.php
 tests/filelist.txt
 tests/filelist.txt.asc
-public/index.php
-public/index.php.asc

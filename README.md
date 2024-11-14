@@ -25,33 +25,16 @@ Není potřeba implementovat vše v do jedné metody, máte nastavený namespace
 vytvořte si další třídy, které budete potřebovat, aby byl kód přehledný.
 
 
-## Setup automatických testu
+## Kontrola správnosti
+Pro spuštení public testů stačí příkaz:
 
-Máte na výběr 2 možnosti, bud to spustit lokalně => pak musíte mít instalovano php a composer a nebo použít připravený docker-compose.yaml.
+```sh
+composer test
+```
 
-Postup pro vývoj na lokalu:
+Samozřejmě, je zde opět předtím potřeba nainstalovat podpůrné knihovny, jak bylo ukázáno v předchozích úkolech.
 
-1. Musíte si instalovat php, composer a sqlLite a nebo postgres databázi, POZOR pro testování používáme SQL lite db, pozor na rozdíly v syntaxe,
-   pro každý operačný systém instalace je jiná, zkuste si vyhledat návod na webu.
-2. Instalace composer pro ubuntu: `sudo apt-get install composer`
-3. Pote musíte instalovat knihovny pomocí příkazu: `composer install`
-4. Přípravené testy můžete pustit pomocí příkazu: `composer test`
-5. Přípojení k db si můžete změnit v souboru `src\Db.php`
-
-Postup pro docker:
-
-1. V kořenu projektu nalezněte docker-compose.yaml soubor
-2. Příhlašte se do registry pomocí docker login gitlab.fit.cvut.cz:5050 -u <username> -p <access_token> pokud jste to ještě neudělali.
-3. Zavolejte přikaz v konzoli: `docker-compose up`
-4. Otevřete novou založku a spuste příkaz `docker-compose exec php bash`, pomocí kterého se připojíte k běžicímu php kontejneru.
-5. Pote musíte instalovat knihovny pomocí příkazu: `composer install`
-6. Přípojení k db si můžete změnit v souboru `src\Db.php` -> výchozí připojení je nastaveno na SQLLite a pro testování také používáme SQL Lite, Pozor na to.
-7. Pro Sql Lite stačí zvolit soubor s touto db po prvním volání. Soubor se objeví v kořenu projektu.
-8. Vaše appka by měla být dostupna na adrese http://localhost:8000/
-9. Přípravené testy můžete pustit pomocí příkazu: `composer test`
-
-Pozor pokud používate docker, všechny tyto přikazy musíte volat uvnitř kontejneru a nebo nastavit si remote interpretor v php stormu.
-
+Dále je možné se připojit k vaší restové službě, tu naleznete na adrese `localhost:80` za předpokladu, že používáte náš docker image.
 
 ---
 
@@ -277,3 +260,10 @@ Pokud je uživatel správně autorizovaný, ale snaží se smazat neexistující
 < 404 Not Found
 
 ```
+
+## Poznámky k úloze:
+* Za žadnou cenu neměňte strukturu projektu. Úloha je hodnocena automaticky. Při úpravě struktury úlohy hodnocení neuspěje, a neobdržíte tak žádné body.
+* V této úloze je možné si přidat další vlastní knihovny. I přes to však nemodifikujte knihovny, které jsou již v [composer.json](composer.json) jsou uvedeny, včetně jejich verzí. Nezapomeňte dodat vlastní [composer.lock](composer.lock).
+* V rámci automatických testů je prováděno přímé připojení k databázy. Z toho důvodu je nutné zůstat u sqlite databáze a ponechat její soubor na umístění uvedeném v souboru [DB.php](src%2FDatabase%2FDB.php). Databázový soubor nenahrávejte do gitu.
+* V souboru filelist.txt jsou vyjmenovány soubory, které nesmí být změněny. Jejich změna povede k zastavení scriptu ještě před začátkem hodnocení a neobdržíte žádné body. V případě tohoto problému doporučujeme soubory obnovit pomocí Gitu.
+* Myslete na to, že testy jsou spouštěny v samostatných procesech mezi jednotlivými dotazy. Díky tomu, data která nebudou uložena v databázy po dokončení 1 requestu budou ztracena.

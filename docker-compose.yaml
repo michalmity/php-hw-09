@@ -3,7 +3,7 @@ services:
     image: gitlab.fit.cvut.cz:5050/bi-php/bi-php-docker/php:8.3
     restart: on-failure
     volumes:
-      - .:/var/www/html
+      - .:/var/www
     ports:
       - 8000:80
 
