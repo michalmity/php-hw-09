@@ -36,7 +36,6 @@ class BooksTest extends TestCase
 
     public function testGetBooks(): void
     {
-        print "Public test running...\n\n";
         $request = HelperFactory::createRequest('GET', '/books');
         $response = $this->app->handle($request);
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode(), self::RESULT_CHAR_FAILED .'Test GET books failed. Invalid status code.');
@@ -52,7 +51,6 @@ class BooksTest extends TestCase
             $this->assertArrayNotHasKey('isbn', $book, self::RESULT_CHAR_FAILED .'Test GET books failed. Invalid json.');
             $this->assertArrayNotHasKey('publisher', $book, self::RESULT_CHAR_FAILED .'Test GET books failed. Invalid json.');
         }
-        print self::RESULT_CHAR_SUCCESS . "GET /books tests successfully passed!\n\n";
     }
 
     public function testGetBookDetail(): void
@@ -73,7 +71,6 @@ class BooksTest extends TestCase
         $this->assertEquals(5, $book['id'], self::RESULT_CHAR_FAILED .'Test GET books/:id failed. Invalid book.');
         $this->assertEquals('Svátý Chlast', $book['name'], self::RESULT_CHAR_FAILED .'Test GET books/:id failed. Invalid book.');
         $this->assertEquals('1-84356-028-1', $book['isbn'], self::RESULT_CHAR_FAILED .'Test GET books/:id failed. Invalid book.');
-        print self::RESULT_CHAR_SUCCESS . "GET /books/:id tests successfully passed!\n\n";
     }
 
     public function testPostBook(): void
@@ -105,7 +102,6 @@ class BooksTest extends TestCase
         $request = $request->withParsedBody($newBook);
         $result = $this->app->handle($request);
         $this->assertEquals(StatusCodeInterface::STATUS_UNAUTHORIZED, $result->getStatusCode(), self::RESULT_CHAR_FAILED .'Test POST /books failed. Invalid status code.');
-        print self::RESULT_CHAR_SUCCESS . "POST /books tests successfully passed!\n\n";
     }
 
     public function testPutBook(): void
@@ -130,7 +126,6 @@ class BooksTest extends TestCase
         $request = $request->withParsedBody($newBook);
         $result = $this->app->handle($request);
         $this->assertEquals(StatusCodeInterface::STATUS_UNAUTHORIZED, $result->getStatusCode(), self::RESULT_CHAR_FAILED .'Test PUT books/:id failed. Invalid status code.');
-        print self::RESULT_CHAR_SUCCESS . "PUT /books/:id tests successfully passed!\n\n";
     }
 
     public function testDeleteBook(): void
@@ -149,7 +144,6 @@ class BooksTest extends TestCase
         );
         $result = $this->app->handle($request);
         $this->assertEquals(StatusCodeInterface::STATUS_NOT_FOUND, $result->getStatusCode(), self::RESULT_CHAR_FAILED .'Test DELETE books/:id failed. Invalid status code.');
-        print self::RESULT_CHAR_SUCCESS . "DELETE /books/:id tests successfully passed!\n\n";
     }
 
     private function getAuth(): string

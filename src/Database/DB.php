@@ -17,7 +17,7 @@ class DB
     {
         /** For SQLLite */
         return self::$pdo ?? (self::$pdo = new PDO(
-            'sqlite:'. __DIR__ . './../../data/hw-08.db',
+            'sqlite:'. __DIR__ . './../../data/hw-09.db',
             null,
             null,
             [
