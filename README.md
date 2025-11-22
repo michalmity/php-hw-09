@@ -1,4 +1,4 @@
-# Úkol 8: REST API
+# Úkol 9: REST API
 
 Vaším úkolem je vytvořit jednoduché REST API pro správu knih. Pomocí API lze prohlížet existující knihy, vytvářet nové a upravovat a mazat existující.
 
