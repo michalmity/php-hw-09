@@ -12,7 +12,9 @@ class BooksRepository
     public function __construct()
     {
         $databaseDir = __DIR__ . '/../../data';
-        if (!is_dir($databaseDir)) {
+
+        if (!is_dir($databaseDir)) 
+        {
             mkdir($databaseDir, 0777, true);
         }
 

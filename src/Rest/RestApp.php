@@ -28,6 +28,7 @@ class RestApp
 
         $booksRepository = new BooksRepository();
 
+        // GET /books
         $this->app->get('/books', function (Request $request, Response $response) use ($booksRepository) {
             $books = $booksRepository->getAll();
             
@@ -39,6 +40,7 @@ class RestApp
                 ->withStatus(200);
         });
 
+        // POST /books
         $this->app->post('/books', function (Request $request, Response $response) use ($booksRepository) {
 
             $authHeader = $request->getHeaderLine('Authorization');
