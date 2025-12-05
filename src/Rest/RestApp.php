@@ -3,6 +3,7 @@
 namespace Books\Rest;
 
 use Books\Middleware\JsonBodyParserMiddleware;
+use Books\Rest\BooksRepository;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Psr7\Request;

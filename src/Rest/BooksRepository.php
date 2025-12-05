@@ -31,9 +31,6 @@ class BooksRepository
         $this->pdo->exec($sql);
     }
 
-    // Zde budeme přidávat metody: getAll(), getById(), create(), update(), delete()...
-    
-
     public function getAll(): array
     {
         $stmt = $this->pdo->query("SELECT id, name, author FROM books");
