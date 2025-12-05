@@ -21,28 +21,46 @@ class RestApp
         $this->app->addErrorMiddleware(true, true, true);
         $this->app->add(new JsonBodyParserMiddleware());
 
-        $this->app->get('/', function (Request $request, Response $response) 
-        {
-            $response->getBody()->write('Funguje to! Ale nic tady není.');
+        $this->app->get('/', function (Request $request, Response $response) {
+            $response->getBody()->write('API běží!');
             return $response;
         });
 
-        // instance repozitare
         $booksRepository = new BooksRepository();
 
-        $this->app->get('/books', function (Request $request, Response $response) use ($booksRepository)
-        {
+        $this->app->get('/books', function (Request $request, Response $response) use ($booksRepository) {
             $books = $booksRepository->getAll();
-
+            
             $payload = json_encode($books);
-
             $response->getBody()->write($payload);
-
+            
             return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(200);
         });
 
+        $this->app->post('/books', function (Request $request, Response $response) use ($booksRepository) {
+
+            $authHeader = $request->getHeaderLine('Authorization');
+            
+            if ($authHeader !== 'Basic YWRtaW46cGFzJHdvcmQ=') {
+                return $response->withStatus(401); 
+            }
+
+
+            $data = $request->getParsedBody();
+
+            // validace
+            if (!isset($data['name'], $data['author'], $data['publisher'], $data['isbn'], $data['pages'])) {
+                return $response->withStatus(400); // Bad Request
+            }
+
+            $id = $booksRepository->create($data);
+
+            return $response
+                ->withHeader('Location', "/books/$id")
+                ->withStatus(201);
+        });
     }
 
     public function run(): void {
