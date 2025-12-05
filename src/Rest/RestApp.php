@@ -20,12 +20,27 @@ class RestApp
         $this->app->addErrorMiddleware(true, true, true);
         $this->app->add(new JsonBodyParserMiddleware());
 
-        $this->app->get('/', function (Request $request, Response $response) {
+        $this->app->get('/', function (Request $request, Response $response) 
+        {
             $response->getBody()->write('Funguje to! Ale nic tady není.');
             return $response;
         });
 
-        // todo implement me please !!!
+        // instance repozitare
+        $booksRepository = new BooksRepository();
+
+        $this->app->get('/books', function (Request $request, Response $response) use ($booksRepository)
+        {
+            $books = $booksRepository->getAll();
+
+            $payload = json_encode($books);
+
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(200);
+        });
 
     }
 
