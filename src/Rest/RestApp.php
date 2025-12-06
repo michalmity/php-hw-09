@@ -90,6 +90,7 @@ class RestApp
         // PUT - /books/id (upraveni knihy)
         $this->app->put('/books/{id}', function (Request $request, Response $response, array $args) use ($booksRepository) 
         {
+            
             $auth = $request->getHeaderLine('Authorization');
             if ($auth !== 'Basic ' . base64_encode('admin:pas$word')) 
             {
@@ -98,16 +99,16 @@ class RestApp
 
             $id = (int)$args['id'];
 
-            $existingBook = $booksRepository->getById($id);
-            if ($existingBook === null)
-            {
-                return $response->withStatus(404);
-            }
-
             $data = $request->getParsedBody();
             if (!isset($data['name'], $data['author'], $data['publisher'], $data['isbn'], $data['pages']))
             {
                 return $response->withStatus(400);
+            }
+
+            $existingBook = $booksRepository->getById($id);
+            if ($existingBook === null)
+            {
+                return $response->withStatus(404);
             }
 
             $booksRepository->update($id, $data);
